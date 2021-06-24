@@ -26,13 +26,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-  login:
-    name: Login to Amazon ECR
+  builddeploy:
+    name: Build Docker Image and Deploy to Amazon ECR
     runs-on: ubuntu-latest
     environment: production
-
-    outputs:
-      registry: ${{ steps.login-ecr.outputs.registry }}
 
     steps:
     - name: Configure AWS credentials
@@ -46,53 +43,28 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-  build:
-    name: Build docker image
-    runs-on: ubuntu-latest
-    environment: production
-    needs: login
-    outputs:
-      image: ${{ steps.build-image.outputs.image }}
-
-    steps:
     - name: Build docker image
       id: build-image
       env:
         GIT_COMMIT: ${{ github.sha }}
       run: |
-        npm run docker_build --dockerregistry "${{ needs.login.outputs.registry }}"
-        echo "::set-output name=image::${{ needs.login.outputs.registry }}/helloworld:${{ github.sha }}"
-
-  push:
-    name: Push docker image to Amazon ECR
-    runs-on: ubuntu-latest
-    environment: production
-    needs: [login, build]
-    outputs:
-      image: ${{ needs.build.outputs.image }}
-
-    steps:
+        npm run docker_build --dockerregistry "${{ steps.login-ecr.outputs.registry }}"
+        echo "::set-output name=image::${{ steps.login-ecr.outputs.registry }}/helloworld:${{ github.sha }}"
+        
     - name: Push docker image to Amazon ECR
       run: |
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        npm run docker_push --dockerregistry "${{ needs.login.outputs.registry }}"
+        npm run docker_push --dockerregistry "${{ steps.login-ecr.outputs.registry }}"
 
-  deploy:
-    name: Deploy to Amazone ECS service
-    runs-on: ubuntu-latest
-    environment: production
-    needs: push
-
-    steps:
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: infra/task-definition.json
         container-name: helloworld
-        image: ${{ needs.push.outputs.image }}
+        image: ${{ steps.build-image.outputs.image }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
