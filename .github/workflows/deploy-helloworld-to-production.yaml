@@ -42,7 +42,7 @@ jobs:
       env:
         GIT_COMMIT: ${{ github.sha }}
       run: |
-        npm run docker_build --dockerregistry "${{ steps.login-ecr.outputs.registry }}"
+        npm --dockerregistry "${{ steps.login-ecr.outputs.registry }}" run docker_build
         echo "::set-output name=image::${{ steps.login-ecr.outputs.registry }}/helloworld:${{ github.sha }}"
         
     - name: Push docker image to Amazon ECR
