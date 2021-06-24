@@ -9,30 +9,30 @@
 #    Replace the value of `container-name` in the workflow below with the name of the container
 #    in the `containerDefinitions` section of the task definition.
 
-
-on:
-  release:
-    types: [created]
-
 name: Deploy to Amazon ECS
 
+on:
+  push:
+    branches:
+      - main
+
 jobs:
-  deploy:
+  checkout:
     name: Deploy
     runs-on: ubuntu-latest
     environment: production
 
     steps:
+    steps:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-2
+  buildAndPublish:
+    name: Build and Publish image to Amazon ECR
+    runs-on: ubuntu-latest
+    environment: production
 
+    steps:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
@@ -50,6 +50,12 @@ jobs:
         npm --dockerregistry run docker_push
         echo "::set-output name=image::$ECR_REGISTRY/helloworld:$GIT_COMMIT"
 
+  deploy:
+    name: Deploy to Amazone ECS service
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
