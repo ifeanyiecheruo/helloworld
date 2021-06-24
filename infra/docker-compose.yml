@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  helloworld:
+    image: "${npm_package_config_dockerregistry}/${npm_package_name}:${npm_package_version}-${GIT_COMMIT}"
+    build:
+        context: ".."
+        dockerfile: "infra/Dockerfile"
+    ports:
+      - "80:80"
