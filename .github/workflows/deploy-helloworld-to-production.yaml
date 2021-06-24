@@ -43,8 +43,7 @@ jobs:
         GIT_COMMIT: ${{ github.sha }}
       run: |
         npm --dockerregistry="${{ steps.login-ecr.outputs.registry }}" run docker_build
-        IMAGE_NAME=$(node -pe "const {name, version} = require('./package.json'); `${name}:${version}-${{ github.sha }}`")
-        echo "::set-output name=image::${{ steps.login-ecr.outputs.registry }}/${IMAGE_NAME}"
+        node tools/set-docker-image-output.js ${{ steps.login-ecr.outputs.registry }} ${{ github.sha }}
         
     - name: Push docker image to Amazon ECR
       env:
