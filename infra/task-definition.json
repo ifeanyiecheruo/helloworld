@@ -1,72 +1,70 @@
 {
-    "taskDefinition": {
-        "containerDefinitions": [
-            {
-                "name": "helloworld",
-                "cpu": 0,
-                "portMappings": [
-                    {
-                        "containerPort": 80,
-                        "hostPort": 80,
-                        "protocol": "tcp"
-                    }
-                ],
-                "essential": true,
-                "environment": [],
-                "mountPoints": [],
-                "volumesFrom": [],
-                "logConfiguration": {
-                    "logDriver": "awslogs",
-                    "options": {
-                        "awslogs-group": "/ecs/helloworld",
-                        "awslogs-region": "us-west-2",
-                        "awslogs-stream-prefix": "ecs"
-                    }
+    "containerDefinitions": [
+        {
+            "name": "helloworld",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/helloworld",
+                    "awslogs-region": "us-west-2",
+                    "awslogs-stream-prefix": "ecs"
                 }
             }
-        ],
-        "family": "helloworld",
-        "taskRoleArn": "arn:aws:iam::332274666188:role/ecsTaskExecutionRole",
-        "executionRoleArn": "arn:aws:iam::332274666188:role/ecsTaskExecutionRole",
-        "networkMode": "awsvpc",
-        "revision": 0,
-        "volumes": [],
-        "status": "ACTIVE",
-        "requiresAttributes": [
-            {
-                "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
-            },
-            {
-                "name": "ecs.capability.execution-role-awslogs"
-            },
-            {
-                "name": "com.amazonaws.ecs.capability.ecr-auth"
-            },
-            {
-                "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
-            },
-            {
-                "name": "com.amazonaws.ecs.capability.task-iam-role"
-            },
-            {
-                "name": "ecs.capability.execution-role-ecr-pull"
-            },
-            {
-                "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
-            },
-            {
-                "name": "ecs.capability.task-eni"
-            }
-        ],
-        "placementConstraints": [],
-        "compatibilities": [
-            "EC2",
-            "FARGATE"
-        ],
-        "requiresCompatibilities": [
-            "FARGATE"
-        ],
-        "cpu": "256",
-        "memory": "1024"
-    }
+        }
+    ],
+    "family": "helloworld",
+    "taskRoleArn": "arn:aws:iam::332274666188:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::332274666188:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "revision": 0,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "1024"
 }
