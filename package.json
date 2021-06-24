@@ -7,9 +7,9 @@
     "compile": "npx tsc",
     "start": "node ./dist",
     "docker_build": "cd infra && node ../tools/commit-var GIT_COMMIT docker compose build",
-    "docker_up": "cd infra && docker compose up",
+    "docker_up": "docker compose --file infra/docker-compose.yml --project-directory . up",
     "docker_login": "aws ecr get-login-password --region us-west-2 | cross-var docker login --username AWS --password-stdin $npm_config_dockerregistry",
-    "docker_push": "cd infra && docker compose push"
+    "docker_push": "docker compose --file infra/docker-compose.yml --project-directory . push"
   },
   "author": "Ifeanyi Echeruo",
   "license": "MIT",

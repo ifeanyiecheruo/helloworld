@@ -60,14 +60,16 @@ jobs:
       env:
         GIT_COMMIT: ${{ github.sha }}
       run: |
-        npm run docker_build --dockerregistry "${{ needs.login.outputs.registry }}" 
+        npm run docker_build --dockerregistry "${{ needs.login.outputs.registry }}"
         echo "::set-output name=image::${{ needs.login.outputs.registry }}/helloworld:${{ github.sha }}"
 
   push:
     name: Push docker image to Amazon ECR
     runs-on: ubuntu-latest
     environment: production
-    needs: login
+    needs: [login, build]
+    outputs:
+      image: ${{ needs.build.outputs.image }}
 
     steps:
     - name: Push docker image to Amazon ECR
@@ -75,13 +77,13 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        npm run docker_push --dockerregistry "${{ needs.login.outputs.registry }}" 
+        npm run docker_push --dockerregistry "${{ needs.login.outputs.registry }}"
 
   deploy:
     name: Deploy to Amazone ECS service
     runs-on: ubuntu-latest
     environment: production
-    needs: build
+    needs: push
 
     steps:
     - name: Fill in the new image ID in the Amazon ECS task definition
@@ -90,7 +92,7 @@ jobs:
       with:
         task-definition: infra/task-definition.json
         container-name: helloworld
-        image: ${{ needs.build.outputs.image }}
+        image: ${{ needs.push.outputs.image }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
