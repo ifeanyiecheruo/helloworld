@@ -42,7 +42,7 @@ jobs:
       env:
         GIT_COMMIT: ${{ github.sha }}
       run: |
-        npm --dockerregistry "${{ steps.login-ecr.outputs.registry }}" run docker_build
+        npm run --dockerregistry "${{ steps.login-ecr.outputs.registry }}" docker_build
         echo "::set-output name=image::${{ steps.login-ecr.outputs.registry }}/helloworld:${{ github.sha }}"
         
     - name: Push docker image to Amazon ECR
@@ -50,7 +50,7 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        npm run docker_push --dockerregistry "${{ steps.login-ecr.outputs.registry }}"
+        npm run --dockerregistry "${{ steps.login-ecr.outputs.registry }}" docker_push 
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
