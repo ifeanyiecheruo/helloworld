@@ -63,4 +63,4 @@ jobs:
         template: temp/s3/transformed.yaml
         parameter-overrides: file://${{ github.workspace }}/temp/s3/transformed.json
         no-fail-on-empty-changeset: "1"
-        capabilities: "CAPABILITY_IAM"
+        capabilities: "CAPABILITY_NAMED_IAM"
