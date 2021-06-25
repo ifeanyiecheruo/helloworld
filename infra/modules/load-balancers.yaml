@@ -41,8 +41,7 @@ Resources:
       Port: 80
       Protocol: HTTP
         DefaultActions: 
-          - 
-            Order: 1
+          - Order: 1
             RedirectConfig: 
                 Protocol: "HTTPS"
                 Port: "443"
