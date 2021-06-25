@@ -59,9 +59,9 @@ jobs:
 
     - name: Prepare AWS Clouformation templates
       env:
-        DST_BUCKET: https://cloudformation-modules.echeruo.net.s3.${{ env.AWS_REGION }}.amazonaws.com
+        DST_BUCKET: cloudformation-modules.echeruo.net
       run: |
-        node tools/resolve-tempate-urls.js infra/services/helloworld/cloudformation.yaml temp/s3/transformed.yaml temp/s3/modules ${{ env.DST_BUCKET }}
+        node tools/resolve-tempate-urls.js infra/services/helloworld/cloudformation.yaml temp/s3/transformed.yaml temp/s3/modules https://${{ env.DST_BUCKET }}.s3.${{ env.AWS_REGION }}.amazonaws.com
         node tools/set-params.js infra/services/helloworld/cloudformation.parameters.json temp/s3/transformed.json ContainerImage ${{ steps.build-image.outputs.image }}
         aws s3 mb ${{ env.DST_BUCKET }} || true
         cd temp/s3/modules
