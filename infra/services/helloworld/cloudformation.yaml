@@ -25,8 +25,8 @@ Resources:
     Properties:
       TemplateURL: ../../modules/main.yaml
       Parameters:
-        ClusterSize: 8
-        InstanceType: t3.nano
+        ClusterSize: !Ref ClusterSize
+        InstanceType: !Ref InstanceType
 
   HelloWorldService:
     Type: AWS::CloudFormation::Stack

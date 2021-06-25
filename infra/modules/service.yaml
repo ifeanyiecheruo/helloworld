@@ -68,7 +68,7 @@ Resources:
       TaskDefinition: !Ref TaskDefinition
       LoadBalancers:
         - ContainerName: !Ref ContainerName
-          ContainerPort: !Ref ContainePort
+          ContainerPort: !Ref ContainerPort
           TargetGroupArn: !Ref TargetGroup
 
   TaskDefinition:
@@ -82,7 +82,7 @@ Resources:
           Cpu: !Ref Cpu
           Memory: !Ref Memory
           PortMappings:
-            - ContainerPort: !Ref ContainePort
+            - ContainerPort: !Ref ContainerPort
           LogConfiguration:
             LogDriver: awslogs
             Options:
