@@ -19,7 +19,6 @@ Resources:
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Name: !Ref EnvironmentName
       Subnets: !Ref Subnets
       SecurityGroups:
         - !Ref SecurityGroup
