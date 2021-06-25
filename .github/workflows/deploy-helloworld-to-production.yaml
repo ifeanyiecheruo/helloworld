@@ -22,6 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
 
+    env:
+      AWS_REGION: us-west-2
+
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -31,7 +34,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-2
+        aws-region: ${{ env.AWS_REGION }}
 
     - name: Login to Amazon ECR
       id: login-ecr
@@ -56,7 +59,7 @@ jobs:
 
     - name: Prepare AWS Clouformation templates
       env:
-        DST_BUCKET: s3://cloudformation-modules.echeruo.net
+        DST_BUCKET: https://cloudformation-modules.echeruo.net.s3.${{ env.AWS_REGION }}.amazonaws.com
       run: |
         node tools/resolve-tempate-urls.js infra/services/helloworld/cloudformation.yaml temp/s3/transformed.yaml temp/s3/modules ${{ env.DST_BUCKET }}
         node tools/set-params.js infra/services/helloworld/cloudformation.parameters.json temp/s3/transformed.json ContainerImage ${{ steps.build-image.outputs.image }}
