@@ -1,0 +1,49 @@
+Parameters:
+  ClusterSize:
+    Description: Number of EC2 instances in the cluster
+    Type: Number
+    Default: 4
+
+  InstanceType:
+    Description: Instance type for EC2 instances in the cluster
+    Type: string
+    Default: t3.nano
+
+  ContainerImage:
+    Description: Container image url
+    Type: string
+    Default: image:latest
+
+  ContainerPort:
+    Description: Port that the container exposes
+    Type: number
+    Default: 80
+
+Resources:
+  Cluster:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: ../../modules/main.yaml
+      Parameters:
+        ClusterSize: 8
+        InstanceType: t3.nano
+
+  HelloWorldService:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: ../../modules/service.yaml
+      Parameters:
+        ContainerName: helloworld
+        ContainerImage: !Ref ContainerImage
+        ContainerPort: !Ref ContainerPort
+        VPC: !GetAtt Cluster.Outputs.VPC
+        Cluster: !GetAtt Cluster.Outputs.Cluster
+        DesiredCount: 2
+        Listener: !GetAtt Cluster.Outputs.Listener
+        Path: /
+        ECSServiceAutoScalingRoleARN: !GetAtt Cluster.Outputs.AutoScalingRole
+
+Outputs:
+  Url:
+    Description: The URL endpoint for the helloworld service
+    Value: !GetAtt Cluster.Outputs.Url

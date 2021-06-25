@@ -18,7 +18,7 @@ on:
 
 jobs:
   builddeploy:
-    name: Build Docker Image and Deploy to Amazon ECR
+    name: Provision ECS Cluster, Build Docker Image, and Deploy to Cluster
     runs-on: ubuntu-latest
     environment: production
 
@@ -54,18 +54,22 @@ jobs:
         # be deployed to ECS.
         npm --dockerregistry="${{ steps.login-ecr.outputs.registry }}" run docker_push
 
-    - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: infra/task-definition.json
-        container-name: helloworld
-        image: ${{ steps.build-image.outputs.image }}
+    - name: Prepare AWS Clouformation templates
+      env:
+        DST_BUCKET: s3://cloudformation-modules.echeruo.net
+      run: |
+        node tools/resolve-tempate-urls.js infra/services/helloworld/cloudformation.yaml temp/s3/transformed.yaml temp/s3/modules ${{ DST_BUCKET }}
+        node tools/set-param.js infra/services/helloworld/cloudformation.parameters.json temp/s3/transformed.json ContainerImage ${{ steps.build-image.outputs.image }}
+        aws s3 mb ${{ DST_BUCKET }}
+        cd temp/s3/modules
+        aws s3 sync . ${{ DST_BUCKET }}
 
-    - name: Deploy Amazon ECS task definition
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+    - name: Provision ECS Cluster
+      uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
-        task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: prod-helloworld
-        cluster: prod-1
-        wait-for-service-stability: true
+        name: HelloworldCluster
+        template: temp/s3/transformed.yaml
+        parameter-overrides: "file://${{ github.workspace }}/temp/s3/transformed.json"
+        no-fail-on-empty-changeset: 1
+        capabilities:
+          default: "CAPABILITY_IAM"

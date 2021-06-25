@@ -1,0 +1,18 @@
+[ 
+    {
+        "ParameterKey": "ClusterSize",
+        "ParameterValue": "8"
+    },
+    {
+        "ParameterKey": "InstanceType",
+        "ParameterValue": "t3.nano"
+    },
+    {
+        "ParameterKey": "ContainerPort",
+        "ParameterValue": "80"
+    },
+    {
+        "ParameterKey": "ContainerImage",
+        "ParameterValue": "image:latest"
+    }
+]
