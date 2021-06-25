@@ -44,8 +44,12 @@ Parameters:
     Type: Number
     Default: 80
 
-  Listener:
+  HTTPListener:
     Description: The Application Load Balancer listener to register with
+    Type: String
+
+  HTTPSListener:
+    Description: The HTTPS Application Load Balancer listener to register with
     Type: String
 
   Path:
@@ -60,7 +64,10 @@ Parameters:
 Resources:
   Service:
     Type: AWS::ECS::Service
-    DependsOn: ListenerRule
+    DependsOn:
+      - HTTPSListenerRule
+      - HTTPListenerRule
+
     Properties:
       Cluster: !Ref Cluster
       Role: !Ref ServiceRole
@@ -110,10 +117,23 @@ Resources:
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
 
-  ListenerRule:
+  HTTPListenerRule:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
     Properties:
-      ListenerArn: !Ref Listener
+      ListenerArn: !Ref HTTPListener
+      Priority: 1
+      Conditions:
+        - Field: path-pattern
+          Values:
+            - !Ref Path
+      Actions:
+        - TargetGroupArn: !Ref TargetGroup
+          Type: forward
+
+  HTTPSListenerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      ListenerArn: !Ref HTTPSListener
       Priority: 1
       Conditions:
         - Field: path-pattern

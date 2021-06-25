@@ -1,4 +1,12 @@
 Parameters:
+  DomainName:
+    Description: Domain Name
+    Type: String
+
+  HostedZoneName:
+    Description: Hosted Zone Name
+    Type: String
+
   EnvironmentName:
     Description: An environment name that will be prefixed to resource names
     Type: String
@@ -26,7 +34,7 @@ Resources:
         - Key: Name
           Value: !Ref EnvironmentName
 
-  LoadBalancerListener:
+  HTTPLoadBalancerListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       LoadBalancerArn: !Ref LoadBalancer
@@ -35,6 +43,39 @@ Resources:
       DefaultActions:
         - Type: forward
           TargetGroupArn: !Ref DefaultTargetGroup
+
+  HTTPSLoadBalancerListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref LoadBalancer
+      Certificates:
+        - !Ref ListernerCertificate
+      Port: 443
+      Protocol: HTTPS
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref DefaultTargetGroup
+
+  ListernerCertificate:
+    Type: AWS::ElasticLoadBalancingV2::ListenerCertificate
+    Properties:
+      CertificateArn: !Ref SSLCertificate
+  
+  SSLCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref DomainName
+      ValidationMethod: DNS
+
+  RecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Type: CNAME
+      HostedZoneName: !Ref HostedZoneName
+      TTL: 300
+      Name: !Ref DomainName
+      ResourceRecords:
+        - !GetAtt LoadBalancer.DNSName
 
   # We define a default target group here, as this is a mandatory Parameters
   # when creating an Application Load Balancer Listener. This is not used, instead
@@ -55,6 +96,10 @@ Outputs:
     Description: The URL of the ALB
     Value: !GetAtt LoadBalancer.DNSName
 
-  Listener:
+  HTTPSListener:
+    Description: A reference to a port 443 listener
+    Value: !Ref HTTPSLoadBalancerListener
+
+  HTTPListener:
     Description: A reference to a port 80 listener
-    Value: !Ref LoadBalancerListener
+    Value: !Ref HTTPLoadBalancerListener

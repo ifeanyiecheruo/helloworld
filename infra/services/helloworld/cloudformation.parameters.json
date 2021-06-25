@@ -1,5 +1,13 @@
 [ 
     {
+        "ParameterKey": "DomainName",
+        "ParameterValue": "helloworld.echeruo.net"
+    },
+    {
+        "ParameterKey": "HostedZoneName",
+        "ParameterValue": "helloworld.echeruo.net"
+    },
+    {
         "ParameterKey": "ClusterSize",
         "ParameterValue": "8"
     },

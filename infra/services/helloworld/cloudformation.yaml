@@ -1,4 +1,12 @@
 Parameters:
+  DomainName:
+    Description: Domain Name
+    Type: String
+
+  HostedZoneName:
+    Description: Hosted Zone Name
+    Type: String
+
   ClusterSize:
     Description: Number of EC2 instances in the cluster
     Type: Number
@@ -25,6 +33,8 @@ Resources:
     Properties:
       TemplateURL: ../../modules/main.yaml
       Parameters:
+        DomainName: !Ref DomainName
+        HostedZone: !Ref HostedZone
         ClusterSize: !Ref ClusterSize
         InstanceType: !Ref InstanceType
 
@@ -39,7 +49,8 @@ Resources:
         VPC: !GetAtt Cluster.Outputs.VPC
         Cluster: !GetAtt Cluster.Outputs.Cluster
         DesiredCount: 2
-        Listener: !GetAtt Cluster.Outputs.Listener
+        HTTPSListener: !GetAtt Cluster.Outputs.HTTPSListener
+        HTTPListener: !GetAtt Cluster.Outputs.HTTPListener
         Path: /
         ECSServiceAutoScalingRoleARN: !GetAtt Cluster.Outputs.AutoScalingRole
 

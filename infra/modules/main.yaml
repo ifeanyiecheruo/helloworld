@@ -1,4 +1,12 @@
 Parameters:
+  DomainName:
+    Description: Domain Name
+    Type: String
+
+  HostedZoneName:
+    Description: Hosted Zone Name
+    Type: String
+
   ClusterSize:
     Description: Number of EC2 instances in the cluster
     Type: Number
@@ -35,6 +43,8 @@ Resources:
     Properties:
       TemplateURL: load-balancers.yaml
       Parameters:
+        DomainName: !Ref DomainName
+        HostedZoneName: !Ref HostedZoneName
         EnvironmentName: !Ref AWS::StackName
         VPC: !GetAtt VPC.Outputs.VPC
         Subnets: !GetAtt VPC.Outputs.PublicSubnets
@@ -70,9 +80,12 @@ Outputs:
   VPC:
     Description: The cluster VPC
     Value: !GetAtt VPC.Outputs.VPC
-  Listener:
+  HTTPSListener:
     Description: The cluster listener
-    Value: !GetAtt ALB.Outputs.Listener
+    Value: !GetAtt ALB.Outputs.HTTPSListener
+  HTTPListener:
+    Description: The cluster listener
+    Value: !GetAtt ALB.Outputs.HTTPListener
   AutoScalingRole:
     Description: The cluster scaling role
     Value: !GetAtt ECS.Outputs.ECSServiceAutoScalingRole
