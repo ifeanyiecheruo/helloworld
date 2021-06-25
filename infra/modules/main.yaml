@@ -6,7 +6,7 @@ Parameters:
 
   InstanceType:
     Description: Instance type for EC2 instance in the cluster
-    Type: string
+    Type: String
     Default: t3.nano
 
 Resources:

@@ -6,17 +6,17 @@ Parameters:
 
   InstanceType:
     Description: Instance type for EC2 instances in the cluster
-    Type: string
+    Type: String
     Default: t3.nano
 
   ContainerImage:
     Description: Container image url
-    Type: string
+    Type: String
     Default: image:latest
 
   ContainerPort:
     Description: Port that the container exposes
-    Type: number
+    Type: Number
     Default: 80
 
 Resources:
