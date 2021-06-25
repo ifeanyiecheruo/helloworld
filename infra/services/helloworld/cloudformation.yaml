@@ -34,7 +34,7 @@ Resources:
       TemplateURL: ../../modules/main.yaml
       Parameters:
         DomainName: !Ref DomainName
-        HostedZone: !Ref HostedZone
+        HostedZoneName: !Ref HostedZoneName
         ClusterSize: !Ref ClusterSize
         InstanceType: !Ref InstanceType
 
