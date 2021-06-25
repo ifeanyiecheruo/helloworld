@@ -49,17 +49,21 @@ Resources:
     Properties:
       LoadBalancerArn: !Ref LoadBalancer
       Certificates:
-        - !Ref ListernerCertificate
+        - !Ref ListenerCertificate
       Port: 443
       Protocol: HTTPS
       DefaultActions:
         - Type: forward
           TargetGroupArn: !Ref DefaultTargetGroup
 
-  ListernerCertificate:
+  ListenerCertificate:
     Type: AWS::ElasticLoadBalancingV2::ListenerCertificate
     Properties:
-      CertificateArn: !Ref SSLCertificate
+      ListenerArn: !Ref HTTPSLoadBalancerListener
+      Certificates: 
+        - {
+            CertificateArn: !Ref SSLCertificate
+        }
   
   SSLCertificate:
     Type: AWS::CertificateManager::Certificate
