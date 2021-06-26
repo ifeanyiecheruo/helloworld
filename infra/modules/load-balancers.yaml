@@ -73,7 +73,7 @@ Resources:
     Type: AWS::Route53::RecordSet
     Properties:
       Type: CNAME
-      HostedZoneName: !Sub ${HostedZoneName}."
+      HostedZoneName: !Sub ${HostedZoneName}.
       TTL: 300
       Name: !Ref DomainName
       ResourceRecords:
