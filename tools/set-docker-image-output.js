@@ -9,6 +9,6 @@ const [ registry, commitHash ] = args;
 
 // The npm module names can contain some invalid characters for image names (eg upper case or @)
 // https://ktomk.github.io/pipelines/doc/DOCKER-NAME-TAG.html#image-name
-const safePackageName = name.toLocaleUpperCase('en-US').replace(/[^a-z0-9/\\._-]*/gm, '_');
+const safePackageName = name.toLocaleLowerCase('en-US').replace(/[^a-z0-9/\\._-]/gm, '_');
 
 console.log(`::set-output name=image::${registry}/${safePackageName}:${version}-${commitHash}`);
