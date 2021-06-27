@@ -1,2 +1,9 @@
-node_modules
-npm-debug.log
+# Exclude all files to prevent accidentally including sensitive files
+**
+
+#Include only the files needed to build the image
+!package.json
+!package-lock.json
+!tsconfig.json
+!src/**
+!tools/*.js
