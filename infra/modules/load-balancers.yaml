@@ -7,7 +7,7 @@ Parameters:
     Description: Hosted Zone Name
     Type: String
 
-  EnvironmentName:
+  Name:
     Description: An environment name that will be prefixed to resource names
     Type: String
 
@@ -32,7 +32,7 @@ Resources:
         - !Ref SecurityGroup
       Tags:
         - Key: Name
-          Value: !Ref EnvironmentName
+          Value: !Ref Name
 
   HTTPLoadBalancerListener:
     Type: AWS::ElasticLoadBalancingV2::Listener

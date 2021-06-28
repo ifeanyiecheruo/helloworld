@@ -1,4 +1,8 @@
 Parameters:
+  Name:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+
   Cluster:
     Description: Please provide the ECS Cluster ID that this service should run on
     Type: String
@@ -57,13 +61,36 @@ Parameters:
     Description: The ECS service auto scaling role ARN
     Type: String
 
+  Env1Name:
+    Type: String
+    Default: _env1
+
+  Env1Value:
+    Type: String
+    Default:
+
+  Env2Name:
+    Type: String
+    Default: _env2
+
+  Env2Value:
+    Type: String
+    Default:
+
+  Env3Name:
+    Type: String
+    Default: _env2
+
+  Env3Value:
+    Type: String
+    Default:
+
 Resources:
   Service:
     Type: AWS::ECS::Service
     DependsOn:
       - HTTPSListenerRule
       - HTTPListenerRule
-
     Properties:
       Cluster: !Ref Cluster
       Role: !Ref ServiceRole
@@ -73,6 +100,9 @@ Resources:
         - ContainerName: !Ref ContainerName
           ContainerPort: !Ref ContainerPort
           TargetGroupArn: !Ref TargetGroup
+      Tags:
+        - Key: Name
+          Value: !Ref Name
 
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
@@ -86,18 +116,31 @@ Resources:
           Memory: !Ref Memory
           PortMappings:
             - ContainerPort: !Ref ContainerPort
+          Environment:
+            - Key: !Ref Env1Name
+              Value: !Ref Env1Value
+            - Key: !Ref Env2Name
+              Value: !Ref Env2Value
+            - Key: !Ref Env3Name
+              Value: !Ref Env3Value
           LogConfiguration:
             LogDriver: awslogs
             Options:
               awslogs-group: !Ref CloudWatchLogsGroup
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: ecs
+      Tags:
+        - Key: Name
+          Value: !Ref Name
 
   CloudWatchLogsGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Ref AWS::StackName
       RetentionInDays: 365
+      Tags:
+        - Key: Name
+          Value: !Ref Name
 
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
@@ -112,6 +155,9 @@ Resources:
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
+      Tags:
+        - Key: Name
+          Value: !Ref Name
 
   HTTPListenerRule:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule

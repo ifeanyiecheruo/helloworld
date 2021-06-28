@@ -28,26 +28,57 @@ Parameters:
     Default: 80
 
 Resources:
-  Cluster:
+  VPC:
     Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: ../../modules/vpc.yaml
+      Parameters:
+        Name: !Ref AWS::StackName
+
+  ElasticacheCluster:
+    Type: 'AWS::ElastiCache::CacheCluster'
+    DependsOn: VPC
+    Properties:    
+      Engine: redis
+      CacheNodeType: cache.t2.micro
+      NumCacheNodes: '1'
+      VpcSecurityGroupIds:
+        - !GetAtt VPC.Outputs.VPC
+      Tags:
+        - Key: Name
+          Value: !Ref Name
+
+  HelloWorldCluster:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: VPC
     Properties:
       TemplateURL: ../../modules/main.yaml
       Parameters:
+        Name: !Ref AWS::StackName
         DomainName: !Ref DomainName
         HostedZoneName: !Ref HostedZoneName
         ClusterSize: !Ref ClusterSize
-        InstanceType: !Ref InstanceType
+        InstanceType: !Ref InstanceType,
+        VPC: !GetAtt  VPC.Outputs.VPC
+        PublicSubnet: !GetAtt VPC.Outputs.PublicSubnet
+        PrivateSubnet: !GetAtt VPC.Outputs.PrivateSubnet
 
   HelloWorldService:
     Type: AWS::CloudFormation::Stack
+    DependsOn: ElasticacheCluster
     Properties:
       TemplateURL: ../../modules/service.yaml
       Parameters:
+        Name: !Ref AWS::StackName
+        Env1Name: 'REDIS_ADDRESS'
+        Env1Value: !GetAttr ElasticacheCluster.RedisEndpoint.Address
+        Env2Name: 'REDIS_PORT'
+        Env2Value: !GetAttr ElasticacheCluster.RedisEndpoint.Port
         ContainerName: helloworld
         ContainerImage: !Ref ContainerImage
         ContainerPort: !Ref ContainerPort
-        VPC: !GetAtt Cluster.Outputs.VPC
-        Cluster: !GetAtt Cluster.Outputs.Cluster
+        VPC: !GetAtt VPC.Outputs.VPC
+        Cluster: !GetAtt HelloWorldCluster.Outputs.Cluster
         DesiredCount: 2
         HTTPSListener: !GetAtt Cluster.Outputs.HTTPSListener
         HTTPListener: !GetAtt Cluster.Outputs.HTTPListener

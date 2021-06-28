@@ -1,5 +1,5 @@
 Parameters:
-  EnvironmentName:
+  Name:
     Description: An environment name that will be prefixed to resource names
     Type: String
 
@@ -34,7 +34,7 @@ Resources:
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties:
-      ClusterName: !Ref EnvironmentName
+      ClusterName: !Ref Name
 
   ECSAutoScalingGroup:
     DependsOn: ECSCluster
@@ -47,7 +47,7 @@ Resources:
       DesiredCapacity: !Ref ClusterSize
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName} ECS host
+          Value: !Sub ${Name} ECS host
           PropagateAtLaunch: true
     CreationPolicy:
       ResourceSignal:
@@ -133,7 +133,7 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       Path: /
-      RoleName: !Sub ${EnvironmentName}-ECSRole-${AWS::Region}
+      RoleName: !Sub ${Name}-ECSRole-${AWS::Region}
       AssumeRolePolicyDocument: |
         {
             "Statement": [{
