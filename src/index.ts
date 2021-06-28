@@ -15,8 +15,9 @@ function configureExpress(instance: Application, processEnv: Record<string, stri
 
     instance.get('/', async function (request, response, next) {
         console.info(`${request.method}: ${request.path} from ${request.ip}`);
-        
+
         try {
+        /*
             const redisClient = redis.createClient({
                 host: env.REDIS_ADDRESS,
                 port: Number.parseInt(env.REDIS_PORT, 10)
@@ -36,6 +37,8 @@ function configureExpress(instance: Application, processEnv: Record<string, stri
             } catch (error) {    
                 response.send(`Hello World, called <unknown> times`);
             }
+        */
+            response.send(`Hello World, called <unknown> times`);
         } catch (error) {
             console.error(error);
             next(error);
