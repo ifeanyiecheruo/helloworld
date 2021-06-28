@@ -67,7 +67,7 @@ Parameters:
 
   Env1Value:
     Type: String
-    Default:
+    Default: ''
 
   Env2Name:
     Type: String
@@ -75,7 +75,7 @@ Parameters:
 
   Env2Value:
     Type: String
-    Default:
+    Default: ''
 
   Env3Name:
     Type: String
@@ -83,7 +83,7 @@ Parameters:
 
   Env3Value:
     Type: String
-    Default:
+    Default: ''
 
 Resources:
   Service:
