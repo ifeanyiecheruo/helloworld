@@ -214,4 +214,6 @@ Outputs:
 
   PrivateSubnetIds:
     Description: A list of the private subnets
-    Value: [!Sub ${PrivateSubnet1}, !Seb ${PrivateSubnet2}]
+    Value: 
+      - !Sub ${PrivateSubnet1}
+      - !Sub ${PrivateSubnet2}
