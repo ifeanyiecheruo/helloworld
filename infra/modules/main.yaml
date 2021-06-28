@@ -51,7 +51,7 @@ Resources:
         HostedZoneName: !Ref HostedZoneName
         Name: !Ref AWS::StackName
         VPC: !Ref VPC
-        Subnets: !Join [',', !Ref PublicSubnets]
+        Subnets: !Ref PublicSubnets
         SecurityGroup: !GetAtt SecurityGroups.Outputs.LoadBalancerSecurityGroup
 
   ECS:
@@ -64,7 +64,7 @@ Resources:
         ClusterSize: !Ref ClusterSize
         VPC: !Ref VPC
         SecurityGroup: !GetAtt SecurityGroups.Outputs.ECSHostSecurityGroup
-        Subnets: !Join [',', !Ref PrivateSubnets]
+        Subnets: !Ref PrivateSubnets
 
   LifecycleHook:
     Type: AWS::CloudFormation::Stack
