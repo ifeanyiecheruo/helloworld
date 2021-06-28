@@ -58,7 +58,7 @@ Resources:
         DomainName: !Ref DomainName
         HostedZoneName: !Ref HostedZoneName
         ClusterSize: !Ref ClusterSize
-        InstanceType: !Ref InstanceType,
+        InstanceType: !Ref InstanceType
         VPC: !GetAtt  VPC.Outputs.VPC
         PublicSubnet: !GetAtt VPC.Outputs.PublicSubnet
         PrivateSubnet: !GetAtt VPC.Outputs.PrivateSubnet
