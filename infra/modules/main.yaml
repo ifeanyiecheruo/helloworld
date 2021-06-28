@@ -27,11 +27,11 @@ Parameters:
   
   PublicSubnets:
     Description: Public subnets of the VPC the cluster will be created in
-    Type: CommaDelimitedList
+    Type: String
 
   PrivateSubnets:
     Description: Private subnets of the VPC the cluster will be created in
-    Type: CommaDelimitedList
+    Type: String
 
 Resources:
   SecurityGroups:
