@@ -53,9 +53,6 @@ Resources:
         VPC: !Ref VPC
         Subnets: !Ref PublicSubnets
         SecurityGroup: !GetAtt SecurityGroups.Outputs.LoadBalancerSecurityGroup
-    Tags:
-      - Key: Name
-        Value: !Ref Name
 
   ECS:
     Type: AWS::CloudFormation::Stack
@@ -68,9 +65,6 @@ Resources:
         VPC: !Ref VPC
         SecurityGroup: !GetAtt SecurityGroups.Outputs.ECSHostSecurityGroup
         Subnets: !Ref PrivateSubnets
-    Tags:
-      - Key: Name
-        Value: !Ref Name
 
   LifecycleHook:
     Type: AWS::CloudFormation::Stack
@@ -79,9 +73,6 @@ Resources:
       Parameters:
         Cluster: !GetAtt ECS.Outputs.Cluster
         ECSAutoScalingGroupName: !GetAtt ECS.Outputs.ECSAutoScalingGroupName
-    Tags:
-      - Key: Name
-        Value: !Ref Name
 
 Outputs:
   Url:

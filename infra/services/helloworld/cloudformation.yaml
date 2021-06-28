@@ -43,10 +43,7 @@ Resources:
       CacheNodeType: cache.t2.micro
       NumCacheNodes: '1'
       VpcSecurityGroupIds:
-        - !GetAtt VPC.Outputs.VPC
-      Tags:
-        - Key: Name
-          Value: !Ref AWS::StackName
+        - !GetAtt VPC.Outputs.DefaultSecurityGroup
 
   HelloWorldCluster:
     Type: AWS::CloudFormation::Stack
