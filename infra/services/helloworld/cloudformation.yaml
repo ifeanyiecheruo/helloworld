@@ -71,9 +71,9 @@ Resources:
       Parameters:
         Name: !Ref AWS::StackName
         Env1Name: 'REDIS_ADDRESS'
-        Env1Value: !GetAttr ElasticacheCluster.RedisEndpoint.Address
+        Env1Value: !GetAtt ElasticacheCluster.RedisEndpoint.Address
         Env2Name: 'REDIS_PORT'
-        Env2Value: !GetAttr ElasticacheCluster.RedisEndpoint.Port
+        Env2Value: !GetAtt ElasticacheCluster.RedisEndpoint.Port
         ContainerName: helloworld
         ContainerImage: !Ref ContainerImage
         ContainerPort: !Ref ContainerPort
