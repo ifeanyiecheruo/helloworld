@@ -39,7 +39,7 @@ Resources:
     Type: AWS::ElastiCache::SubnetGroup
     Properties: 
       Description: !Sub Subnet group for ${AWS::StackName}
-      SubnetIds: !Split [',', !Join [',', !GetAtt VPC.Outputs.PrivateSubnets]]
+      SubnetIds: !GetAtt VPC.Outputs.PrivateSubnets
 
   ElasticacheCluster:
     Type: AWS::ElastiCache::CacheCluster
