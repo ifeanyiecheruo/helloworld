@@ -23,15 +23,15 @@ Parameters:
 
   VPC:
     Description: VPC to create the cluster in
-    Type: String
+    Type: AWS::EC2::VPC::Id
   
-  PublicSubnet:
-    Description: Public subnet of the VPC the cluster will be created in
-    Type: String
+  PublicSubnets:
+    Description: Public subnets of the VPC the cluster will be created in
+    Type: List<AWS::EC2::Subnet::Id>
 
-  PrivateSubnet:
-    Description: Private subnet of the VPC the cluster will be created in
-    Type: String
+  PrivateSubnets:
+    Description: Private subnets of the VPC the cluster will be created in
+    Type: List<AWS::EC2::Subnet::Id>
 
 Resources:
   SecurityGroups:

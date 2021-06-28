@@ -35,13 +35,20 @@ Resources:
       Parameters:
         Name: !Ref AWS::StackName
 
+  ElasticacheClusterSubnetGroup:
+    Type: AWS::ElastiCache::SubnetGroup
+    Properties: 
+      Description: !Sub Subnet group for ${AWS::StackName}
+      SubnetIds: !Ref VPC.Outputs.PrivateSubnets
+
   ElasticacheCluster:
-    Type: 'AWS::ElastiCache::CacheCluster'
+    Type: AWS::ElastiCache::CacheCluster
     DependsOn: VPC
     Properties:    
       Engine: redis
       CacheNodeType: cache.t2.micro
-      NumCacheNodes: '1'
+      NumCacheNodes: 1
+      CacheSubnetGroupName: !Ref ElasticacheClusterSubnetGroup
       VpcSecurityGroupIds:
         - !GetAtt VPC.Outputs.DefaultSecurityGroup
 
@@ -57,8 +64,8 @@ Resources:
         ClusterSize: !Ref ClusterSize
         InstanceType: !Ref InstanceType
         VPC: !GetAtt  VPC.Outputs.VPC
-        PublicSubnet: !GetAtt VPC.Outputs.PublicSubnet1
-        PrivateSubnet: !GetAtt VPC.Outputs.PrivateSubnet1
+        PublicSubnets: !GetAtt VPC.Outputs.PublicSubnets
+        PrivateSubnets: !GetAtt VPC.Outputs.PrivateSubnets
 
   HelloWorldService:
     Type: AWS::CloudFormation::Stack
