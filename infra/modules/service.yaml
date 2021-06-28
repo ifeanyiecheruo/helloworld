@@ -100,9 +100,6 @@ Resources:
         - ContainerName: !Ref ContainerName
           ContainerPort: !Ref ContainerPort
           TargetGroupArn: !Ref TargetGroup
-      Tags:
-        - Key: Name
-          Value: !Ref Name
 
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
@@ -129,18 +126,12 @@ Resources:
               awslogs-group: !Ref CloudWatchLogsGroup
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: ecs
-      Tags:
-        - Key: Name
-          Value: !Ref Name
 
   CloudWatchLogsGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Ref AWS::StackName
       RetentionInDays: 365
-      Tags:
-        - Key: Name
-          Value: !Ref Name
 
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
