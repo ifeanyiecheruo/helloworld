@@ -114,11 +114,11 @@ Resources:
           PortMappings:
             - ContainerPort: !Ref ContainerPort
           Environment:
-            - Key: !Ref Env1Name
+            - Name: !Ref Env1Name
               Value: !Ref Env1Value
-            - Key: !Ref Env2Name
+            - Name: !Ref Env2Name
               Value: !Ref Env2Value
-            - Key: !Ref Env3Name
+            - Name: !Ref Env3Name
               Value: !Ref Env3Value
           LogConfiguration:
             LogDriver: awslogs
@@ -146,9 +146,6 @@ Resources:
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
-      Tags:
-        - Key: Name
-          Value: !Ref Name
 
   HTTPListenerRule:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
