@@ -17,7 +17,7 @@ Parameters:
 
   Subnets:
     Description: Choose which subnets the Application Load Balancer should be deployed to
-    Type: List<AWS::EC2::Subnet::Id>
+    Type: CommaDelimitedList
 
   SecurityGroup:
     Description: Select the Security Group to apply to the Application Load Balancer
@@ -27,7 +27,7 @@ Resources:
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Subnets: !Ref Subnets
+      Subnets: !Split [',', !Ref Subnets]
       SecurityGroups:
         - !Ref SecurityGroup
       Tags:

@@ -19,7 +19,7 @@ Parameters:
 
   Subnets:
     Description: Choose which subnets this ECS cluster should be deployed to
-    Type: List<AWS::EC2::Subnet::Id>
+    Type: CommaDelimitedList
 
   SecurityGroup:
     Description: Select the Security Group to use for the ECS cluster hosts
@@ -40,7 +40,7 @@ Resources:
     DependsOn: ECSCluster
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
-      VPCZoneIdentifier: !Ref Subnets
+      VPCZoneIdentifier: !Split [',', !Ref Subnets]
       LaunchConfigurationName: !Ref ECSLaunchConfiguration
       MinSize: !Ref ClusterSize
       MaxSize: !Ref ClusterSize

@@ -27,11 +27,11 @@ Parameters:
   
   PublicSubnets:
     Description: Public subnets of the VPC the cluster will be created in
-    Type: List<AWS::EC2::Subnet::Id>
+    Type: CommaDelimitedList
 
   PrivateSubnets:
     Description: Private subnets of the VPC the cluster will be created in
-    Type: List<AWS::EC2::Subnet::Id>
+    Type: CommaDelimitedList
 
 Resources:
   SecurityGroups:
