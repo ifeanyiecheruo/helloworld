@@ -80,12 +80,12 @@ Resources:
         VPC: !GetAtt VPC.Outputs.VPC
         Cluster: !GetAtt HelloWorldCluster.Outputs.Cluster
         DesiredCount: 2
-        HTTPSListener: !GetAtt Cluster.Outputs.HTTPSListener
-        HTTPListener: !GetAtt Cluster.Outputs.HTTPListener
+        HTTPSListener: !GetAtt HelloWorldCluster.Outputs.HTTPSListener
+        HTTPListener: !GetAtt HelloWorldCluster.Outputs.HTTPListener
         Path: /
-        ECSServiceAutoScalingRoleARN: !GetAtt Cluster.Outputs.AutoScalingRole
+        ECSServiceAutoScalingRoleARN: !GetAtt HelloWorldCluster.Outputs.AutoScalingRole
 
 Outputs:
   Url:
     Description: The URL endpoint for the helloworld service
-    Value: !GetAtt Cluster.Outputs.Url
+    Value: !GetAtt HelloWorldCluster.Outputs.Url
