@@ -46,7 +46,7 @@ Resources:
         - !GetAtt VPC.Outputs.VPC
       Tags:
         - Key: Name
-          Value: !Ref Name
+          Value: !Ref AWS::StackName
 
   HelloWorldCluster:
     Type: AWS::CloudFormation::Stack
