@@ -60,8 +60,8 @@ Resources:
         ClusterSize: !Ref ClusterSize
         InstanceType: !Ref InstanceType
         VPC: !GetAtt  VPC.Outputs.VPC
-        PublicSubnet: !GetAtt VPC.Outputs.PublicSubnet
-        PrivateSubnet: !GetAtt VPC.Outputs.PrivateSubnet
+        PublicSubnet: !GetAtt VPC.Outputs.PublicSubnet1
+        PrivateSubnet: !GetAtt VPC.Outputs.PrivateSubnet1
 
   HelloWorldService:
     Type: AWS::CloudFormation::Stack
