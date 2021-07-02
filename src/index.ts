@@ -34,10 +34,11 @@ function configureExpress(instance: Application, processEnv: Record<string, stri
 
                 response.send(`Hello World, called ${count} times`);
             } catch (error) {    
-                response.send(`Hello World, called <unknown> times`);
+                response.send(`Hello World, called unknown times`);
             }
 
             response.send(`Hello World, called unknown times`);
+            next();
         } catch (error) {
             console.error(error);
             next(error);
