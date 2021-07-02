@@ -15,34 +15,35 @@ function configureExpress(instance: Application, processEnv: Record<string, stri
 
     instance.get('/', async function (request, response, next) {
         console.info(`${request.method}: ${request.path} from ${request.ip}`);
+        response.send(`Hello World, called unknown times`);
 
-        try {
-            const redisClient = redis.createClient({
-                host: env.REDIS_ADDRESS,
-                port: Number.parseInt(env.REDIS_PORT, 10)
-            });
+        // try {
+        //     const redisClient = redis.createClient({
+        //         host: env.REDIS_ADDRESS,
+        //         port: Number.parseInt(env.REDIS_PORT, 10)
+        //     });
 
-            try {
-                // get the current count
-                const count = await getCountFromRedis(redisClient);
+        //     try {
+        //         // get the current count
+        //         const count = await getCountFromRedis(redisClient);
 
-                // Set the current count
-                // Note here is a race condition here
-                // Another client may have incremented the count causing us to clobber their increment
-                // This is a demo, we are not going to mitigate the race
-                await setCountToRedis(redisClient, count + 1);            
+        //         // Set the current count
+        //         // Note here is a race condition here
+        //         // Another client may have incremented the count causing us to clobber their increment
+        //         // This is a demo, we are not going to mitigate the race
+        //         await setCountToRedis(redisClient, count + 1);            
 
-                response.send(`Hello World, called ${count} times`);
-            } catch (error) {    
-                response.send(`Hello World, called unknown times`);
-            }
+        //         response.send(`Hello World, called ${count} times`);
+        //     } catch (error) {    
+        //         response.send(`Hello World, called unknown times`);
+        //     }
 
-            response.send(`Hello World, called unknown times`);
-            next();
-        } catch (error) {
-            console.error(error);
-            next(error);
-        }
+        //     response.send(`Hello World, called unknown times`);
+        //     next();
+        // } catch (error) {
+        //     console.error(error);
+        //     next(error);
+        // }
     });
 
     return instance;
