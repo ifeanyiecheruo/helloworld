@@ -1,3 +1,7 @@
+# There are really only two steps in this workflow
+# 1 push a docker image to Amazon ECR
+# 2 Deploy a cloudformation template that references the docker image
+# The rest of the workflow is marshalling data from one API to the other
 name: Deploy to Amazon ECS
 
 on:
@@ -29,34 +33,27 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Build docker image
-      id: build-image
-      env:
-        GIT_COMMIT: ${{ github.sha }}
+    - name: Generate docker image name from Amazon ECR registry
+      id: gen-image-name
       run: |
-        npm --dockerregistry="${{ steps.login-ecr.outputs.registry }}" run docker_build
         node tools/set-docker-image-output.js ${{ steps.login-ecr.outputs.registry }} ${{ github.sha }}
-        
-    - name: Push docker image to Amazon ECR
-      env:
-        GIT_COMMIT: ${{ github.sha }}
-      run: |
-        # Build a docker container and
-        # push it to ECR so that it can
-        # be deployed to ECS.
-        npm --dockerregistry="${{ steps.login-ecr.outputs.registry }}" run docker_push
 
-    - name: Prepare AWS Clouformation templates
+    - name: Build and push docker image to Amazon ECR registry
+      run: |
+        npm --dockerimage="${{ steps.gen-image-name.outputs.image }}" run docker_build
+        npm --dockerimage="${{ steps.gen-image-name.outputs.image }}" run docker_push
+
+    - name: Prepare AWS Cloudformation templates
       env:
         DST_BUCKET: cloudformation-modules.echeruo.net
       run: |
         node tools/resolve-tempate-urls.js infra/services/helloworld/cloudformation.yaml temp/s3/transformed.yaml temp/s3/modules https://${{ env.DST_BUCKET }}.s3.${{ env.AWS_REGION }}.amazonaws.com
-        node tools/set-params.js infra/services/helloworld/cloudformation.parameters.json temp/s3/transformed.json ContainerImage ${{ steps.build-image.outputs.image }}
+        node tools/set-params.js infra/services/helloworld/cloudformation.parameters.json temp/s3/transformed.json ContainerImage ${{ steps.gen-image-name.outputs.image }}
         aws s3 mb s3://${{ env.DST_BUCKET }} || true
         cd temp/s3/modules
         aws s3 sync . s3://${{ env.DST_BUCKET }}
 
-    - name: Provision ECS Cluster
+    - name: Deploy AWS Cloudformation templates
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
         name: HelloworldCluster

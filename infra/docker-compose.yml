@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   helloworld:
-    image: "${npm_config_dockerregistry}/${npm_package_name}:${npm_package_version}-${GIT_COMMIT}"
+    image: "${npm_config_dockerimage}"
     build:
         context: "."
         dockerfile: "infra/services/helloworld/Dockerfile"
