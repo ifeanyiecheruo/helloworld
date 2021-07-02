@@ -2,48 +2,60 @@ import express, { Application } from "express";
 import redis from 'redis';
 
 const port = 80;
-configureExpress(express(), process.env).listen({ port: port }, function () {
+const server = configureExpress(express(), process.env);
+server.listen({ port: port }, function () {
     console.info(`Listening on port: ${port}`);
 });
 
 function configureExpress(instance: Application, processEnv: Record<string, string | undefined>): Application {
-    const env  = {
+    const envDefaults =  {
         REDIS_ADDRESS: "localhost",
-        REDIS_PORT: "6379",
+        REDIS_PORT: "6379"
+    };
+
+    const env = {
+        ...envDefaults,
         ...processEnv 
     };
 
+    const redisAddress = env.REDIS_ADDRESS;
+    const redisPort = Number.parseInt(env.REDIS_PORT, 10);
+
+    console.info(`Configured for redis instance at ${redisAddress}:${redisPort}`);
+
     instance.get('/', async function (request, response, next) {
-        console.info(`${request.method}: ${request.path} from ${request.ip}`);
-        response.send(`Hello World, called unknown times`);
+        console.info(`${request.method}: ${request.path}`);
 
-        // try {
-        //     const redisClient = redis.createClient({
-        //         host: env.REDIS_ADDRESS,
-        //         port: Number.parseInt(env.REDIS_PORT, 10)
-        //     });
+        try {
+            const redisClient = redis.createClient({
+                host: redisAddress,
+                port: redisPort
+            });
 
-        //     try {
-        //         // get the current count
-        //         const count = await getCountFromRedis(redisClient);
+            try {
+                // get the current count
+                const count = await getCountFromRedis(redisClient);
 
-        //         // Set the current count
-        //         // Note here is a race condition here
-        //         // Another client may have incremented the count causing us to clobber their increment
-        //         // This is a demo, we are not going to mitigate the race
-        //         await setCountToRedis(redisClient, count + 1);            
+                try {
+                    // Set the current count
+                    // Note here is a race condition here
+                    // Another client may have incremented the count causing us to clobber their increment
+                    // This is a demo, we are not going to mitigate the race
+                    await setCountToRedis(redisClient, count + 1);            
+                } catch (error) {
+                    response.send(`Could not increment the current count. ${error.message}`);
+                }
 
-        //         response.send(`Hello World, called ${count} times`);
-        //     } catch (error) {    
-        //         response.send(`Hello World, called unknown times`);
-        //     }
+                response.send(`Hello World, called ${count} times.`);
+            } catch (error) {
+                response.send(`Could not get the current count. ${error.message}`);
+            }
 
-        //     response.send(`Hello World, called unknown times`);
-        //     next();
-        // } catch (error) {
-        //     console.error(error);
-        //     next(error);
-        // }
+            next();
+        } catch (error) {
+            console.error(`${request.method}: ${request.path}: ${error}`);
+            next(error);
+        }
     });
 
     return instance;
